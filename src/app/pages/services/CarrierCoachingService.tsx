@@ -3,7 +3,7 @@ import { Briefcase, Target, TrendingUp } from 'lucide-react';
 export function CarrierCoachingService() {
   return (
     <div className="pt-16">
-      <section className="relative bg-gradient-to-br from-gray-50 via-white to-blue-50 py-28 px-6">
+      <section className="premium-service-hero relative bg-gradient-to-br from-gray-50 via-white to-blue-50 py-28 px-6">
         <div className="container mx-auto max-w-4xl text-center">
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center mx-auto mb-8 shadow-xl">
             <Briefcase className="w-10 h-10 text-white" />

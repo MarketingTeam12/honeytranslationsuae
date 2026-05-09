@@ -9,7 +9,7 @@ export function InterpretationService() {
   return (
     <div className="pt-16">
       {/* HERO SECTION */}
-      <section className="relative bg-gradient-to-br from-[#151249] via-[#1e1a5e] to-[#151249] text-white py-28 px-6 md:px-8 overflow-hidden">
+      <section className="premium-service-hero relative bg-gradient-to-br from-[#151249] via-[#1e1a5e] to-[#151249] text-white py-28 px-6 md:px-8 overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0 world-map-pattern opacity-10"></div>
         <div className="blur-blob w-96 h-96 bg-yellow-400/20 top-10 right-10"></div>

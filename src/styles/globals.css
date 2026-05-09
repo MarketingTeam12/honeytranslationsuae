@@ -249,6 +249,90 @@
   font-weight: 950;
 }
 
+.premium-service-hero {
+  background:
+    radial-gradient(circle at 22% 32%, rgba(0, 196, 255, 0.16), transparent 34%),
+    radial-gradient(circle at 76% 28%, rgba(244, 208, 63, 0.16), transparent 32%),
+    linear-gradient(135deg, #151249 0%, #1e1a5e 52%, #151249 100%) !important;
+  color: #ffffff;
+}
+
+.premium-service-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(227, 181, 82, 0.18) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+.premium-service-hero > .container {
+  max-width: 80rem;
+  position: relative;
+  z-index: 1;
+}
+
+.premium-service-hero h1 {
+  max-width: 1040px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1.5rem !important;
+  font-size: clamp(2.75rem, 4.1vw, 4.65rem) !important;
+  line-height: 1.12 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.01em;
+  color: transparent !important;
+  background: linear-gradient(90deg, #ffffff 0%, #ffffff 48%, #F6DC72 76%, #E3B552 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+.premium-service-hero p {
+  max-width: 56rem;
+  margin-left: auto;
+  margin-right: auto;
+  color: rgba(255, 255, 255, 0.88) !important;
+  font-size: clamp(1.12rem, 1.5vw, 1.35rem) !important;
+  line-height: 1.75 !important;
+}
+
+.premium-service-hero h1 + p,
+.premium-service-hero p.text-2xl,
+.premium-service-hero p.text-xl.md\:text-2xl {
+  color: #F4D03F !important;
+  font-size: clamp(1.35rem, 2vw, 1.85rem) !important;
+  line-height: 1.35 !important;
+  font-weight: 800 !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.premium-service-hero .w-20.h-20 {
+  width: 7rem !important;
+  height: 7rem !important;
+  border-radius: 1.75rem !important;
+  background: linear-gradient(135deg, #F4D03F 0%, #E3B552 100%) !important;
+  box-shadow: 0 24px 70px rgba(250, 204, 21, 0.32), inset 0 0 0 1px rgba(255, 255, 255, 0.35) !important;
+}
+
+.premium-service-hero .w-20.h-20 svg {
+  width: 3.5rem !important;
+  height: 3.5rem !important;
+  color: #151249 !important;
+  stroke-width: 1.8;
+}
+
+@media (max-width: 768px) {
+  .premium-service-hero h1 {
+    font-size: clamp(2.2rem, 8.6vw, 3.35rem) !important;
+    line-height: 1.15 !important;
+    max-width: 100%;
+  }
+}
+
 @media (max-width: 768px) {
   .country-location-hero-heading {
     max-width: 100%;

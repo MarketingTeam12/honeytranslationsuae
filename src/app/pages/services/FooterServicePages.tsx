@@ -320,7 +320,7 @@ function FooterServicePage({ config }: { config: ServicePageConfig }) {
 
   return (
     <div className="pt-16">
-      <section className="relative bg-gradient-to-br from-[#151249] via-[#1e1a5e] to-[#151249] text-white py-24 sm:py-28 px-6 md:px-8 overflow-hidden">
+      <section className="premium-service-hero relative bg-gradient-to-br from-[#151249] via-[#1e1a5e] to-[#151249] text-white py-24 sm:py-28 px-6 md:px-8 overflow-hidden">
         <div className="absolute inset-0 world-map-pattern opacity-10"></div>
         <div className="blur-blob w-72 h-72 sm:w-96 sm:h-96 bg-yellow-400/20 top-10 right-10"></div>
         <div className="blur-blob w-72 h-72 sm:w-96 sm:h-96 bg-blue-400/20 bottom-10 left-10"></div>

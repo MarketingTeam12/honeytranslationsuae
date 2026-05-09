@@ -3,7 +3,7 @@ import { Plane, FileCheck, Clock } from 'lucide-react';
 export function VisaAssistance() {
   return (
     <div className="pt-16">
-      <section className="relative bg-gradient-to-br from-gray-50 via-white to-blue-50 py-28 px-6">
+      <section className="premium-service-hero relative bg-gradient-to-br from-gray-50 via-white to-blue-50 py-28 px-6">
         <div className="container mx-auto max-w-4xl text-center">
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-teal-400 to-teal-500 flex items-center justify-center mx-auto mb-8 shadow-xl">
             <Plane className="w-10 h-10 text-white" />
