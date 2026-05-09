@@ -717,6 +717,18 @@ textarea::placeholder {
   opacity: 1;
 }
 
+.testimonial-card .testimonial-card-text {
+  color: #1f2937 !important;
+}
+
+.testimonial-card .testimonial-card-name {
+  color: #151249 !important;
+}
+
+.testimonial-card .testimonial-card-location {
+  color: #4b5563 !important;
+}
+
 /* Accent Text Colors */
 .text-accent-blue {
   color: #00C4FF;

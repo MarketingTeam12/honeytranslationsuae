@@ -261,7 +261,7 @@ const translationsEN = {
       emailNote: 'We reply within 24 hours',
       phoneTitle: 'Phone / WhatsApp',
       phoneNumber: '+91 7299005577',
-      phoneNote: 'Available 9AMâ€“9PM GST',
+      phoneNote: 'Available 9AM-6PM',
       locationTitle: 'Office Location',
       locationAddress: 'Remote',
       locationNote: 'Visit us by appointment',
