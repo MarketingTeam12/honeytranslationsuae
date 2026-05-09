@@ -1,5 +1,6 @@
 import { Calendar, ArrowRight, ChevronRight, Globe, Mail } from 'lucide-react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export function Blog() {
   const [activeFilter, setActiveFilter] = useState('All');
@@ -10,6 +11,7 @@ export function Blog() {
   const featuredPost = {
     image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop',
     title: 'The Future of AI in Professional Translation Services',
+    slug: 'the-future-of-ai-in-professional-translation-services',
     excerpt: 'Discover how artificial intelligence is transforming the translation industry while maintaining the human touch that ensures cultural accuracy and nuanced communication.',
     category: 'Industry Trends',
     date: 'December 10, 2025',
@@ -20,6 +22,7 @@ export function Blog() {
     {
       image: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=800&h=500&fit=crop',
       title: 'Top 10 Translation Mistakes That Cost Businesses Millions',
+      slug: 'translation-mistakes',
       excerpt: 'Learn about the most common translation errors and how to avoid them in your international business communications.',
       category: 'Business',
       date: 'December 8, 2025',
@@ -28,6 +31,7 @@ export function Blog() {
     {
       image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&h=500&fit=crop',
       title: 'Understanding Legal Translation: A Comprehensive Guide',
+      slug: 'legal-translation-guide',
       excerpt: 'Everything you need to know about certified legal translations for international contracts, immigration, and court documents.',
       category: 'Translation',
       date: 'December 5, 2025',
@@ -36,6 +40,7 @@ export function Blog() {
     {
       image: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=800&h=500&fit=crop',
       title: 'Cultural Nuances in Arabic Translation',
+      slug: 'cultural-nuances-arabic-translation',
       excerpt: 'Explore the importance of cultural sensitivity when translating content for Arabic-speaking markets.',
       category: 'Culture',
       date: 'December 3, 2025',
@@ -44,6 +49,7 @@ export function Blog() {
     {
       image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&h=500&fit=crop',
       title: 'Website Localization Best Practices for 2025',
+      slug: 'website-localization-best-practices-for-2025',
       excerpt: 'A complete guide to adapting your website for global audiences while maintaining brand consistency.',
       category: 'Localization',
       date: 'November 30, 2025',
@@ -52,6 +58,7 @@ export function Blog() {
     {
       image: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&h=500&fit=crop',
       title: 'How to Choose the Right Translation Service Provider',
+      slug: 'how-to-choose-the-right-translation-service-provider',
       excerpt: 'Key factors to consider when selecting a professional translation partner for your business needs.',
       category: 'Business',
       date: 'November 28, 2025',
@@ -60,10 +67,20 @@ export function Blog() {
     {
       image: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=800&h=500&fit=crop',
       title: 'The Rise of Remote Interpretation Services',
+      slug: 'the-rise-of-remote-interpretation-services',
       excerpt: 'How video conferencing technology is revolutionizing interpretation services worldwide.',
       category: 'Translation',
       date: 'November 25, 2025',
       readTime: '6 min read'
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&h=500&fit=crop',
+      title: 'How Multilingual Skills Open Global Opportunities',
+      slug: 'multilingual-skills-global-opportunities',
+      excerpt: 'Explore how learning and using multiple languages can improve careers, education, business growth, and cross-cultural confidence.',
+      category: 'Languages',
+      date: 'November 22, 2025',
+      readTime: '7 min read'
     }
   ];
 
@@ -161,10 +178,10 @@ export function Blog() {
                 </p>
 
                 <div className="flex items-center gap-6">
-                  <button className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#151249] rounded-xl hover:shadow-[0_0_30px_rgba(250,204,21,0.5)] transition-all font-bold">
+                  <Link to={`/blog/${featuredPost.slug}`} className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#151249] rounded-xl hover:shadow-[0_0_30px_rgba(250,204,21,0.5)] transition-all font-bold">
                     Read More
                     <ArrowRight className="w-5 h-5" />
-                  </button>
+                  </Link>
                   <span className="text-gray-500 text-sm">{featuredPost.readTime}</span>
                 </div>
               </div>
@@ -238,10 +255,10 @@ export function Blog() {
                     {post.excerpt}
                   </p>
 
-                  <button className="inline-flex items-center gap-2 text-[#151249] font-semibold hover:gap-3 transition-all group-hover:text-yellow-600">
+                  <Link to={`/blog/${post.slug}`} className="inline-flex items-center gap-2 text-[#151249] font-semibold hover:gap-3 transition-all group-hover:text-yellow-600">
                     Read More
                     <ArrowRight className="w-4 h-4" />
-                  </button>
+                  </Link>
                 </div>
               </article>
             ))}

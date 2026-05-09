@@ -9,7 +9,8 @@ export function Contact() {
     name: '',
     email: '',
     phone: '',
-    language: '',
+    sourceLanguage: '',
+    targetLanguage: '',
     message: ''
   });
 
@@ -23,7 +24,7 @@ export function Contact() {
     alert('Thank you! We will contact you soon.');
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
@@ -173,30 +174,47 @@ export function Contact() {
                 </div>
               </div>
 
-              {/* Select Language */}
-              <div>
-                <label htmlFor="language" className="block text-[#151249] mb-3 font-semibold">
-                  {t('contact.form.language')}
-                </label>
-                <select
-                  id="language"
-                  name="language"
-                  value={formData.language}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField('language')}
-                  onBlur={() => setFocusedField(null)}
-                  className="w-full px-6 py-4 rounded-xl border-2 border-gray-200 focus:border-yellow-400 focus:outline-none transition-all text-lg"
-                  style={{
-                    boxShadow: focusedField === 'language' ? '0 0 0 4px rgba(250,204,21,0.1)' : 'none'
-                  }}
-                >
-                  <option value="">{t('contact.form.languagePlaceholder')}</option>
-                  <option value="english-arabic">{t('home.contactForm.enToAr')}</option>
-                  <option value="arabic-english">{t('home.contactForm.arToEn')}</option>
-                  <option value="english-spanish">{t('home.contactForm.enToEs')}</option>
-                  <option value="english-chinese">{t('home.contactForm.enToCn')}</option>
-                  <option value="other">{t('home.contactForm.otherPair')}</option>
-                </select>
+              {/* Source & Target Languages */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <label htmlFor="sourceLanguage" className="block text-[#151249] mb-3 font-semibold">
+                    Source Language
+                  </label>
+                  <input
+                    type="text"
+                    id="sourceLanguage"
+                    name="sourceLanguage"
+                    value={formData.sourceLanguage}
+                    onChange={handleChange}
+                    onFocus={() => setFocusedField('sourceLanguage')}
+                    onBlur={() => setFocusedField(null)}
+                    className="w-full px-6 py-4 rounded-xl border-2 border-gray-200 focus:border-yellow-400 focus:outline-none transition-all text-lg"
+                    style={{
+                      boxShadow: focusedField === 'sourceLanguage' ? '0 0 0 4px rgba(250,204,21,0.1)' : 'none'
+                    }}
+                    placeholder="Source Language (e.g. Arabic)"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="targetLanguage" className="block text-[#151249] mb-3 font-semibold">
+                    Target Language
+                  </label>
+                  <input
+                    type="text"
+                    id="targetLanguage"
+                    name="targetLanguage"
+                    value={formData.targetLanguage}
+                    onChange={handleChange}
+                    onFocus={() => setFocusedField('targetLanguage')}
+                    onBlur={() => setFocusedField(null)}
+                    className="w-full px-6 py-4 rounded-xl border-2 border-gray-200 focus:border-yellow-400 focus:outline-none transition-all text-lg"
+                    style={{
+                      boxShadow: focusedField === 'targetLanguage' ? '0 0 0 4px rgba(250,204,21,0.1)' : 'none'
+                    }}
+                    placeholder="Target Language (e.g. English)"
+                  />
+                </div>
               </div>
 
               {/* File Upload */}

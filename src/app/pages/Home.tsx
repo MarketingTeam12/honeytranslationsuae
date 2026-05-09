@@ -18,7 +18,8 @@ export function Home() {
     name: '',
     email: '',
     phone: '',
-    language: '',
+    sourceLanguage: '',
+    targetLanguage: '',
     message: ''
   });
   const [fileName, setFileName] = useState('');
@@ -173,12 +174,12 @@ export function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left Content */}
             <div className="space-y-8">
-              <h1 className="animate-fadeInUp text-white" style={{
+              <h1 className="country-location-hero-heading animate-fadeInUp text-white" style={{
                 animationDelay: '0ms',
                 textShadow: '0px 3px 10px rgba(0,0,0,0.4), 0 0 30px rgba(255,255,255,0.1)'
               }}>
                 {heroLead}{' '}
-                <span className="gradient-text-shine" style={{
+                <span className="country-location-hero-highlight gradient-text-shine" style={{
                   textShadow: '0px 3px 10px rgba(0,0,0,0.3)'
                 }}>
                   {heroTitle.includes(heroHighlight) ? heroHighlight : heroTitle.split(' ').slice(-2).join(' ')}
@@ -701,6 +702,7 @@ export function Home() {
                   className="space-y-5"
                   onSubmit={(e) => {
                     e.preventDefault();
+                    console.log('Quote form submitted:', formData);
                     alert('Thank you! We will contact you soon.');
                   }}
                 >
@@ -785,29 +787,59 @@ export function Home() {
                     </label>
                   </div>
 
-                  {/* Select Language */}
-                  <div className="relative">
-                    <select
-                      required
-                      value={formData.language}
-                      onChange={(e) => setFormData({ ...formData, language: e.target.value })}
-                      onFocus={() => setFocusedField('language')}
-                      onBlur={() => setFocusedField(null)}
-                      className={`w-full px-5 py-4 rounded-xl border-2 transition-all duration-300 ${
-                        focusedField === 'language'
-                          ? 'border-yellow-400 shadow-lg shadow-yellow-100'
-                          : 'border-gray-200 hover:border-gray-300'
-                      } bg-white/80 backdrop-blur-sm focus:outline-none appearance-none cursor-pointer`}
-                    >
-                      <option value="">{t('home.contactForm.languagePair')}</option>
-                      <option value="english-arabic">{t('home.contactForm.enToAr')}</option>
-                      <option value="arabic-english">{t('home.contactForm.arToEn')}</option>
-                      <option value="english-spanish">{t('home.contactForm.enToEs')}</option>
-                      <option value="english-chinese">{t('home.contactForm.enToCn')}</option>
-                      <option value="english-hindi">{t('home.contactForm.enToHi')}</option>
-                      <option value="other">{t('home.contactForm.otherPair')}</option>
-                    </select>
-                    <Languages className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                  {/* Source & Target Languages */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="relative">
+                      <input
+                        type="text"
+                        required
+                        value={formData.sourceLanguage}
+                        onChange={(e) => setFormData({ ...formData, sourceLanguage: e.target.value })}
+                        onFocus={() => setFocusedField('sourceLanguage')}
+                        onBlur={() => setFocusedField(null)}
+                        className={`w-full px-5 py-4 rounded-xl border-2 transition-all duration-300 ${
+                          focusedField === 'sourceLanguage'
+                            ? 'border-yellow-400 shadow-lg shadow-yellow-100'
+                            : 'border-gray-200 hover:border-gray-300'
+                        } bg-white/80 backdrop-blur-sm focus:outline-none pt-6`}
+                        placeholder={focusedField === 'sourceLanguage' ? 'Source Language (e.g. Arabic)' : ' '}
+                      />
+                      <label
+                        className={`absolute left-5 transition-all duration-300 pointer-events-none ${
+                          focusedField === 'sourceLanguage' || formData.sourceLanguage
+                            ? 'top-2 text-xs text-yellow-600 font-semibold'
+                            : 'top-4 text-gray-500'
+                        }`}
+                      >
+                        Source Language
+                      </label>
+                    </div>
+
+                    <div className="relative">
+                      <input
+                        type="text"
+                        required
+                        value={formData.targetLanguage}
+                        onChange={(e) => setFormData({ ...formData, targetLanguage: e.target.value })}
+                        onFocus={() => setFocusedField('targetLanguage')}
+                        onBlur={() => setFocusedField(null)}
+                        className={`w-full px-5 py-4 rounded-xl border-2 transition-all duration-300 ${
+                          focusedField === 'targetLanguage'
+                            ? 'border-yellow-400 shadow-lg shadow-yellow-100'
+                            : 'border-gray-200 hover:border-gray-300'
+                        } bg-white/80 backdrop-blur-sm focus:outline-none pt-6`}
+                        placeholder={focusedField === 'targetLanguage' ? 'Target Language (e.g. English)' : ' '}
+                      />
+                      <label
+                        className={`absolute left-5 transition-all duration-300 pointer-events-none ${
+                          focusedField === 'targetLanguage' || formData.targetLanguage
+                            ? 'top-2 text-xs text-yellow-600 font-semibold'
+                            : 'top-4 text-gray-500'
+                        }`}
+                      >
+                        Target Language
+                      </label>
+                    </div>
                   </div>
 
                   {/* Upload Document */}

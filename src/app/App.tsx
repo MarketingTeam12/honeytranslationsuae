@@ -13,6 +13,7 @@ const About = lazy(() => import('./pages/About').then((module) => ({ default: mo
 const Services = lazy(() => import('./pages/Services').then((module) => ({ default: module.Services })));
 const Contact = lazy(() => import('./pages/Contact').then((module) => ({ default: module.Contact })));
 const Blog = lazy(() => import('./pages/Blog').then((module) => ({ default: module.Blog })));
+const BlogDetail = lazy(() => import('./pages/BlogDetail').then((module) => ({ default: module.BlogDetail })));
 const CEO = lazy(() => import('./pages/CEO').then((module) => ({ default: module.CEO })));
 const Team = lazy(() => import('./pages/Team').then((module) => ({ default: module.Team })));
 const MissionVision = lazy(() => import('./pages/MissionVision').then((module) => ({ default: module.MissionVision })));
@@ -39,6 +40,12 @@ const VoiceOverDubbingService = lazy(() => import('./pages/services/VoiceOverDub
 const GraphicDesignService = lazy(() => import('./pages/services/GraphicDesignService').then((module) => ({ default: module.GraphicDesignService })));
 const TranscriptionService = lazy(() => import('./pages/services/TranscriptionService').then((module) => ({ default: module.TranscriptionService })));
 const SubtitlingService = lazy(() => import('./pages/services/SubtitlingService').then((module) => ({ default: module.SubtitlingService })));
+const DocumentTranslationPage = lazy(() => import('./pages/services/FooterServicePages').then((module) => ({ default: module.DocumentTranslationPage })));
+const LegalTranslationPage = lazy(() => import('./pages/services/FooterServicePages').then((module) => ({ default: module.LegalTranslationPage })));
+const MedicalTranslationPage = lazy(() => import('./pages/services/FooterServicePages').then((module) => ({ default: module.MedicalTranslationPage })));
+const TechnicalTranslationPage = lazy(() => import('./pages/services/FooterServicePages').then((module) => ({ default: module.TechnicalTranslationPage })));
+const SubtitlesTranscriptionPage = lazy(() => import('./pages/services/FooterServicePages').then((module) => ({ default: module.SubtitlesTranscriptionPage })));
+const WebsiteLocalizationPage = lazy(() => import('./pages/services/FooterServicePages').then((module) => ({ default: module.WebsiteLocalizationPage })));
 
 function LanguageRouteSync() {
   const { language } = useLanguage();
@@ -102,6 +109,18 @@ export default function App() {
               <Route path="/ar/pricing" element={<Pricing />} />
               <Route path="/services" element={<Services />} />
               <Route path="/ar/services" element={<Services />} />
+              <Route path="/services/document-translation" element={<DocumentTranslationPage />} />
+              <Route path="/ar/services/document-translation" element={<DocumentTranslationPage />} />
+              <Route path="/services/legal-translation" element={<LegalTranslationPage />} />
+              <Route path="/ar/services/legal-translation" element={<LegalTranslationPage />} />
+              <Route path="/services/medical-translation" element={<MedicalTranslationPage />} />
+              <Route path="/ar/services/medical-translation" element={<MedicalTranslationPage />} />
+              <Route path="/services/technical-translation" element={<TechnicalTranslationPage />} />
+              <Route path="/ar/services/technical-translation" element={<TechnicalTranslationPage />} />
+              <Route path="/services/subtitles-transcription" element={<SubtitlesTranscriptionPage />} />
+              <Route path="/ar/services/subtitles-transcription" element={<SubtitlesTranscriptionPage />} />
+              <Route path="/services/website-localization" element={<WebsiteLocalizationPage />} />
+              <Route path="/ar/services/website-localization" element={<WebsiteLocalizationPage />} />
               <Route path="/services/translation" element={<TranslationService />} />
               <Route path="/ar/services/translation" element={<TranslationService />} />
               <Route path="/services/interpretation" element={<InterpretationService />} />
@@ -140,6 +159,8 @@ export default function App() {
               <Route path="/ar/contact" element={<Contact />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/ar/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogDetail />} />
+              <Route path="/ar/blog/:slug" element={<BlogDetail />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/ar/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />

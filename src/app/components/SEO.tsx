@@ -7,7 +7,7 @@ const siteName = 'Honey Translation';
 const defaultImage = `${siteUrl}/og-image.jpg`;
 const logoUrl = `${siteUrl}/logo.png`;
 const phone = '+91 72990 05577';
-const email = 'salesteam@honeytranslations.com';
+const email = 'sales@honeytranslations.com';
 
 type LanguageCode = 'EN' | 'AR';
 

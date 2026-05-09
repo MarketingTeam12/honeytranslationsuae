@@ -43,7 +43,7 @@ export function CallToAction() {
         {/* Contact Information */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {[
-            { icon: Mail, label: 'Email Us', value: 'salesteam@honeytranslations.com', link: 'mailto:salesteam@honeytranslations.com' },
+            { icon: Mail, label: 'Email Us', value: 'sales@honeytranslations.com', link: 'mailto:sales@honeytranslations.com' },
             { icon: Phone, label: 'Call Us', value: '+971 XX XXX XXXX', link: 'tel:+971' },
             { icon: MapPin, label: 'Visit Us', value: 'Dubai, UAE', link: '#' }
           ].map((contact, index) => {
