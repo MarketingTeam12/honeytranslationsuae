@@ -56,6 +56,9 @@ Thumbs.db
 # Temporary files
 tmp/
 temp/
+public/uploads/*
+!public/uploads/.gitkeep
+server/db/*.sqlite
 
 # Package lock files (optional)
 # package-lock.json

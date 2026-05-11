@@ -13,6 +13,7 @@ import {
   Phone,
   Scale,
   Shield,
+  Star,
   Subtitles,
   Wrench,
 } from 'lucide-react';
@@ -38,6 +39,8 @@ type ServicePageConfig = {
   ctaTitle: string;
   ctaSubtitle: string;
   quoteLabel: string;
+  testimonialQuote: string;
+  testimonialAuthor: string;
 };
 
 const commonLanguages = [
@@ -100,6 +103,9 @@ const serviceConfigs: Record<string, ServicePageConfig> = {
     ctaTitle: 'Translate Your Document with Confidence',
     ctaSubtitle: 'Send your file and receive a clear quote from our team.',
     quoteLabel: 'Request Document Quote',
+    testimonialQuote:
+      'Our certificates and business documents were translated exactly as required, and every format detail was preserved.',
+    testimonialAuthor: 'HR Coordinator, Dubai',
   },
   legal: {
     title: 'Legal Translation',
@@ -142,6 +148,9 @@ const serviceConfigs: Record<string, ServicePageConfig> = {
     ctaTitle: 'Need a Legal Translation Reviewed Carefully?',
     ctaSubtitle: 'Share your requirements and our team will guide the next step.',
     quoteLabel: 'Request Legal Quote',
+    testimonialQuote:
+      'Their legal translation team handled contracts and affidavits with precision. The language was clear and submission-ready.',
+    testimonialAuthor: 'Legal Consultant, Abu Dhabi',
   },
   medical: {
     title: 'Medical Translation',
@@ -184,6 +193,9 @@ const serviceConfigs: Record<string, ServicePageConfig> = {
     ctaTitle: 'Translate Medical Records with Care',
     ctaSubtitle: 'Send your file securely and we will respond with a quote.',
     quoteLabel: 'Request Medical Quote',
+    testimonialQuote:
+      'Patient reports and discharge summaries were translated accurately and clearly, which helped our cross-border care process.',
+    testimonialAuthor: 'Clinic Operations Manager',
   },
   technical: {
     title: 'Technical Translation',
@@ -226,6 +238,9 @@ const serviceConfigs: Record<string, ServicePageConfig> = {
     ctaTitle: 'Make Technical Content Clear Worldwide',
     ctaSubtitle: 'Tell us your industry, files, and language pair for a tailored quote.',
     quoteLabel: 'Request Technical Quote',
+    testimonialQuote:
+      'Our product manuals and safety instructions were translated with consistent terminology and excellent readability.',
+    testimonialAuthor: 'Engineering Lead, Manufacturing Team',
   },
   subtitles: {
     title: 'Subtitles & Transcription',
@@ -268,6 +283,9 @@ const serviceConfigs: Record<string, ServicePageConfig> = {
     ctaTitle: 'Make Your Audio and Video Accessible',
     ctaSubtitle: 'Send your media details and required format for a quick quote.',
     quoteLabel: 'Request Media Quote',
+    testimonialQuote:
+      'The transcript was accurate and the subtitles were perfectly timed. It made our training videos much easier to follow.',
+    testimonialAuthor: 'Learning and Development Specialist',
   },
   website: {
     title: 'Website Localization',
@@ -310,6 +328,9 @@ const serviceConfigs: Record<string, ServicePageConfig> = {
     ctaTitle: 'Ready to Localize Your Website?',
     ctaSubtitle: 'Share your URL or content files and we will prepare a clear quote.',
     quoteLabel: 'Request Localization Quote',
+    testimonialQuote:
+      'Website localization improved our international conversions. The copy felt natural in every target market.',
+    testimonialAuthor: 'E-commerce Growth Manager',
   },
 };
 
@@ -437,6 +458,32 @@ function FooterServicePage({ config }: { config: ServicePageConfig }) {
                 </span>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-soft-blue px-6 md:px-8">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-12">
+            <h2 className="text-[#151249] mb-6" style={{ fontSize: '2.75rem' }}>
+              What Our Clients Say
+            </h2>
+          </div>
+
+          <div className="bg-white rounded-3xl p-10 card-shadow-premium">
+            <div className="flex justify-center mb-6">
+              {[...Array(5)].map((_, idx) => (
+                <Star key={idx} className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+              ))}
+            </div>
+
+            <blockquote className="text-xl text-gray-700 italic text-center mb-6 leading-relaxed">
+              "{config.testimonialQuote}"
+            </blockquote>
+
+            <p className="text-center text-[#151249] font-semibold">
+              - {config.testimonialAuthor}
+            </p>
           </div>
         </div>
       </section>

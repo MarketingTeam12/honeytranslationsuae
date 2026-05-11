@@ -1,14 +1,12 @@
 import { Calendar, ArrowRight, ChevronRight, Globe, Mail } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { fetchPublishedBlogs } from '../services/blogApi';
 
 export function Blog() {
   const [activeFilter, setActiveFilter] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
-
-  const categories = ['All', 'Translation', 'Localization', 'Business', 'Languages', 'Culture'];
-
-  const featuredPost = {
+  const [featuredPost, setFeaturedPost] = useState({
     image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop',
     title: 'The Future of AI in Professional Translation Services',
     slug: 'the-future-of-ai-in-professional-translation-services',
@@ -16,9 +14,8 @@ export function Blog() {
     category: 'Industry Trends',
     date: 'December 10, 2025',
     readTime: '8 min read'
-  };
-
-  const blogPosts = [
+  });
+  const [blogPosts, setBlogPosts] = useState([
     {
       image: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=800&h=500&fit=crop',
       title: 'Top 10 Translation Mistakes That Cost Businesses Millions',
@@ -82,7 +79,57 @@ export function Blog() {
       date: 'November 22, 2025',
       readTime: '7 min read'
     }
-  ];
+  ]);
+
+  useEffect(() => {
+    const formatDate = (value?: string) => {
+      if (!value) return '';
+      if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        const date = new Date(`${value}T00:00:00`);
+        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      }
+      return value;
+    };
+
+    const loadDynamicBlogs = async () => {
+      try {
+        const response = await fetchPublishedBlogs({ limit: 100 });
+        if (!response?.data?.length) return;
+
+        const mapped = response.data.map((post) => ({
+          image: post.featuredImage || 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop',
+          title: post.title,
+          slug: post.slug,
+          excerpt: post.shortDescription,
+          category: post.category.name,
+          date: formatDate(post.publishDate),
+          readTime: post.readTime,
+        }));
+
+        const featuredDynamic =
+          mapped.find((post) => post.slug === 'the-future-of-ai-in-professional-translation-services') ||
+          mapped[0];
+
+        setFeaturedPost(featuredDynamic);
+        setBlogPosts(mapped.filter((post) => post.slug !== featuredDynamic.slug));
+      } catch {
+        // Keep existing hardcoded content as a safe fallback
+      }
+    };
+
+    loadDynamicBlogs();
+  }, []);
+
+  const categories = useMemo(() => {
+    const dynamicCategories = Array.from(new Set(blogPosts.map((post) => post.category))).filter(Boolean);
+    return ['All', ...dynamicCategories];
+  }, [blogPosts]);
+
+  useEffect(() => {
+    if (!categories.includes(activeFilter)) {
+      setActiveFilter('All');
+    }
+  }, [activeFilter, categories]);
 
   const filteredPosts = activeFilter === 'All' 
     ? blogPosts 

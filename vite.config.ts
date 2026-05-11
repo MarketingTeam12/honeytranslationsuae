@@ -31,6 +31,17 @@ export default defineConfig({
   },
 server: {
     host: true,
-    allowedHosts: "all"
+    allowedHosts: "all",
+    proxy: {
+      '/api': {
+        // Use IPv4 loopback to avoid localhost/IPv6 proxy connection issues.
+        target: 'http://127.0.0.1:8787',
+        changeOrigin: true,
+      },
+      '/uploads': {
+        target: 'http://127.0.0.1:8787',
+        changeOrigin: true,
+      },
+    },
   }
 })

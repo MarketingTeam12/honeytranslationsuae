@@ -1,6 +1,77 @@
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Calendar, Clock, ArrowLeft, ArrowRight, Share2, Bookmark, Globe } from 'lucide-react';
-import { useEffect } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Calendar, Clock } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { fetchBlogBySlug } from '../services/blogApi';
+
+const MAX_DETAIL_PARAGRAPHS = 3;
+const MAX_PARAGRAPH_CHARACTERS = 260;
+
+const normalizeText = (value = '') => value.replace(/\s+/g, ' ').trim();
+
+const shortenParagraph = (value: string) => {
+  const normalized = normalizeText(value);
+  if (normalized.length <= MAX_PARAGRAPH_CHARACTERS) return normalized;
+
+  const clipped = normalized.slice(0, MAX_PARAGRAPH_CHARACTERS);
+  const sentenceBoundary = clipped.lastIndexOf('. ');
+  if (sentenceBoundary > 120) {
+    return clipped.slice(0, sentenceBoundary + 1).trim();
+  }
+
+  const wordBoundary = clipped.lastIndexOf(' ');
+  const endIndex = wordBoundary > 80 ? wordBoundary : MAX_PARAGRAPH_CHARACTERS;
+  return `${clipped.slice(0, endIndex).trim()}...`;
+};
+
+const extractParagraphsFromContent = (content?: string) => {
+  const source = normalizeText(content || '');
+  if (!source) return [];
+
+  try {
+    if (typeof DOMParser !== 'undefined') {
+      const documentNode = new DOMParser().parseFromString(source, 'text/html');
+      const htmlParagraphs = Array.from(documentNode.querySelectorAll('p'))
+        .map((node) => shortenParagraph(node.textContent || ''))
+        .filter(Boolean);
+
+      if (htmlParagraphs.length > 0) {
+        return htmlParagraphs;
+      }
+
+      const fullText = shortenParagraph(documentNode.body?.textContent || '');
+      if (fullText) return [fullText];
+    }
+  } catch {
+    // Fall back to plain-text splitting if HTML parsing fails.
+  }
+
+  return source
+    .split(/\n+/)
+    .map((line) => shortenParagraph(line))
+    .filter(Boolean);
+};
+
+const buildShortDetailParagraphs = (excerpt?: string, content?: string) => {
+  const candidates = [excerpt || '', ...extractParagraphsFromContent(content)];
+  const uniqueParagraphs: string[] = [];
+
+  for (const candidate of candidates) {
+    const paragraph = shortenParagraph(candidate);
+    if (!paragraph) continue;
+
+    const alreadyIncluded = uniqueParagraphs.some(
+      (existing) => existing.toLowerCase() === paragraph.toLowerCase(),
+    );
+
+    if (!alreadyIncluded) {
+      uniqueParagraphs.push(paragraph);
+    }
+
+    if (uniqueParagraphs.length >= MAX_DETAIL_PARAGRAPHS) break;
+  }
+
+  return uniqueParagraphs;
+};
 
 export function BlogDetail() {
   const { slug } = useParams();
@@ -19,7 +90,7 @@ export function BlogDetail() {
       featured: true,
       content: `
         <h2>The AI Revolution in Translation</h2>
-        <p>Artificial Intelligence has been making waves across industries, and professional translation services are no exception. As we stand on the brink of 2026, AI technologies are not just assisting translators—they're fundamentally reshaping how we approach language barriers and cross-cultural communication.</p>
+        <p>Artificial Intelligence has been making waves across industries, and professional translation services are no exception. As we stand on the brink of 2026, AI technologies are not just assisting translators-they're fundamentally reshaping how we approach language barriers and cross-cultural communication.</p>
 
         <h2>Current State of AI in Translation</h2>
         <p>Today's AI-powered translation tools have evolved far beyond simple word-for-word replacements. Modern neural machine translation systems can understand context, maintain tone, and even adapt to industry-specific terminology. However, the human element remains crucial for ensuring cultural accuracy and nuanced communication.</p>
@@ -234,7 +305,7 @@ export function BlogDetail() {
       image: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=800&h=500&fit=crop',
       content: `
         <h2>The Rich Tapestry of Arabic Culture</h2>
-        <p>Arabic is spoken by over 400 million people across 22 countries, each with its own cultural nuances, dialects, and traditions. Successful translation for Arabic-speaking markets requires more than linguistic accuracy—it demands cultural sensitivity and deep understanding of local contexts.</p>
+        <p>Arabic is spoken by over 400 million people across 22 countries, each with its own cultural nuances, dialects, and traditions. Successful translation for Arabic-speaking markets requires more than linguistic accuracy-it demands cultural sensitivity and deep understanding of local contexts.</p>
 
         <h2>Arabic Language Variations</h2>
         <p>Arabic is not a monolithic language. There are significant differences between:</p>
@@ -301,7 +372,7 @@ export function BlogDetail() {
         <h2>Building Long-term Success</h2>
         <p>Successful Arabic market entry requires ongoing cultural learning and adaptation. What works today may need adjustment as cultural norms evolve. Building relationships with local partners and maintaining cultural sensitivity will contribute to long-term business success in Arabic-speaking markets.</p>
 
-        <p>Understanding and respecting cultural nuances isn't just good business practice—it's essential for building meaningful connections and achieving sustainable success in Arabic-speaking markets.</p>
+        <p>Understanding and respecting cultural nuances isn't just good business practice-it's essential for building meaningful connections and achieving sustainable success in Arabic-speaking markets.</p>
       `,
       tags: ['Arabic Translation', 'Cultural Sensitivity', 'Middle East Markets', 'Localization'],
       author: {
@@ -320,7 +391,7 @@ export function BlogDetail() {
       image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&h=500&fit=crop',
       content: `
         <h2>The Importance of Website Localization</h2>
-        <p>In 2025, having a website that speaks to global audiences in their language is no longer optional—it's essential. Website localization goes beyond translation; it involves adapting your entire digital presence to resonate with international markets while maintaining brand consistency and user experience.</p>
+        <p>In 2025, having a website that speaks to global audiences in their language is no longer optional-it's essential. Website localization goes beyond translation; it involves adapting your entire digital presence to resonate with international markets while maintaining brand consistency and user experience.</p>
 
         <h2>Understanding Website Localization</h2>
         <p>Website localization encompasses:</p>
@@ -380,7 +451,7 @@ export function BlogDetail() {
         </ul>
 
         <h3>Transcreation for Marketing Content</h3>
-        <p>For marketing materials, consider transcreation—creative adaptation rather than literal translation—to maintain emotional impact and cultural relevance.</p>
+        <p>For marketing materials, consider transcreation-creative adaptation rather than literal translation-to maintain emotional impact and cultural relevance.</p>
 
         <h2>Design and User Experience</h2>
         <h3>Right-to-Left Languages</h3>
@@ -714,7 +785,7 @@ export function BlogDetail() {
       image: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=800&h=500&fit=crop',
       content: `
         <h2>The Digital Transformation of Interpretation</h2>
-        <p>The interpretation industry is undergoing a dramatic transformation as video conferencing and remote communication technologies mature. Remote interpretation services (RIS) are no longer a niche offering—they're becoming the standard for many business and governmental applications.</p>
+        <p>The interpretation industry is undergoing a dramatic transformation as video conferencing and remote communication technologies mature. Remote interpretation services (RIS) are no longer a niche offering-they're becoming the standard for many business and governmental applications.</p>
 
         <h2>What is Remote Interpretation?</h2>
         <p>Remote interpretation uses video conferencing platforms to provide interpretation services without requiring the interpreter to be physically present. This technology enables:</p>
@@ -961,226 +1032,139 @@ export function BlogDetail() {
     }
   ];
 
-  const post = blogPosts.find(p => p.slug === slug || p.aliases?.includes(slug || ''));
+  const [post, setPost] = useState<any | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // Related posts (excluding current post)
-  const relatedPosts = (
-    blogPosts.filter(p => p.slug !== post?.slug && p.category === post?.category).length > 0
-      ? blogPosts.filter(p => p.slug !== post?.slug && p.category === post?.category)
-      : blogPosts.filter(p => p.slug !== post?.slug)
-  )
-    .slice(0, 3);
+  const formatDate = (value?: string) => {
+    if (!value) return '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      return new Date(`${value}T00:00:00`).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+    return value;
+  };
 
   useEffect(() => {
-    if (!post) {
-      navigate('/blog', { replace: true });
-    }
-  }, [post, navigate]);
+    const load = async () => {
+      if (!slug) {
+        navigate('/blog', { replace: true });
+        return;
+      }
 
-  if (!post) {
-    return null;
+      try {
+        const postResponse = await fetchBlogBySlug(slug);
+
+        const dynamicPost = postResponse.data;
+        setPost({
+          slug: dynamicPost.slug,
+          title: dynamicPost.title,
+          excerpt: dynamicPost.shortDescription,
+          category: dynamicPost.category.name,
+          date: formatDate(dynamicPost.publishDate),
+          readTime: dynamicPost.readTime,
+          image: dynamicPost.featuredImage || 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop',
+          detailParagraphs: buildShortDetailParagraphs(dynamicPost.shortDescription, dynamicPost.fullContent),
+        });
+        setIsLoaded(true);
+        return;
+      } catch {
+        // Fallback to legacy static content
+      }
+
+      const fallback = blogPosts.find((entry) => entry.slug === slug || entry.aliases?.includes(slug || ''));
+      if (!fallback) {
+        navigate('/blog', { replace: true });
+        return;
+      }
+
+      setPost({
+        ...fallback,
+        detailParagraphs: buildShortDetailParagraphs(fallback.excerpt, fallback.content),
+      });
+      setIsLoaded(true);
+    };
+
+    load();
+  }, [slug, navigate]);
+
+  useEffect(() => {
+    if (!post) return;
+
+    document.title = `${post.title} | Honey Translations Blog`;
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', post.excerpt || '');
+    }
+  }, [post]);
+
+  if (!isLoaded || !post) {
+    return <div className="pt-24 pb-16 text-center text-gray-600">Loading article...</div>;
   }
 
   return (
-    <div className="pt-16">
-      {/* HERO SECTION */}
-      <section className="relative bg-gradient-to-br from-gray-50 via-white to-blue-50 py-24 md:py-28 px-6 overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.02]">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M60 0C26.9 0 0 26.9 0 60s26.9 60 60 60 60-26.9 60-60S93.1 0 60 0zm0 110c-27.6 0-50-22.4-50-50s22.4-50 50-50 50 22.4 50 50-22.4 50-50 50z' fill='%23151249'/%3E%3C/svg%3E")`,
-          }}></div>
-        </div>
+    <div className="pt-16 bg-white">
+      <section className="bg-[#f3f5fa] border-b border-gray-100 px-5 sm:px-6 py-12 md:py-16 lg:py-20">
+        <article className="mx-auto w-full max-w-6xl">
+          <Link
+            to="/blog"
+            className="inline-flex items-center rounded-lg border border-gray-200 px-4 py-2 text-sm md:text-base font-medium text-gray-600 hover:text-[#151249] hover:border-[#151249]/30 transition-colors"
+          >
+            {'\u2190 Back to Blog'}
+          </Link>
 
-        <div className="container mx-auto max-w-6xl text-center relative z-10">
-          <div className="mb-6">
-            <Link
-              to="/blog"
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-[#151249] transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Blog
-            </Link>
-          </div>
-
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md border border-gray-100 mb-6">
-            <span className="text-sm font-medium text-gray-700">{post.category}</span>
-          </div>
-
-          <h1 className="text-4xl md:text-6xl lg:text-7xl mb-8 font-bold text-[#151249] leading-tight">
-            {post.title}
-          </h1>
-
-          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8 text-gray-600 mb-8 text-base md:text-lg">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              <span>{post.date}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              <span>{post.readTime}</span>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-center gap-3 md:gap-4 mb-8 flex-wrap">
-            {post.tags.map((tag, index) => (
-              <span key={index} className="px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm md:text-base font-medium">
-                #{tag}
+          <div className="blog-detail-header mt-6 md:mt-8">
+            <div className="mb-6 md:mb-8 flex flex-wrap items-center gap-3 md:gap-4 text-gray-600">
+              <span className="inline-flex items-center rounded-full bg-blue-50 border border-blue-100 px-4 py-1.5 text-sm font-semibold text-[#151249]">
+                {post.category}
               </span>
-            ))}
-          </div>
-        </div>
+              <div className="flex items-center gap-2 text-sm md:text-base">
+                <Calendar className="w-4 h-4" />
+                <span>{post.date}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm md:text-base">
+                <Clock className="w-4 h-4" />
+                <span>{post.readTime}</span>
+              </div>
+            </div>
 
-        <div className="absolute top-10 right-10 w-32 h-32 bg-gradient-to-br from-yellow-400/10 to-yellow-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 left-10 w-40 h-40 bg-gradient-to-br from-blue-400/10 to-indigo-400/10 rounded-full blur-3xl"></div>
+            <h1 className="text-[clamp(2.1rem,4.6vw,4.05rem)] font-bold text-[#151249] leading-[1.12] mb-5 md:mb-6">
+              {post.title}
+            </h1>
+
+            <p className="text-base sm:text-lg md:text-xl leading-relaxed text-gray-600 max-w-4xl">
+              {post.excerpt}
+            </p>
+          </div>
+        </article>
       </section>
 
-      {/* FEATURED IMAGE */}
-      <section className="py-14 md:py-20 bg-white px-6">
-        <div className="container mx-auto max-w-7xl">
-          <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+      <section className="px-5 sm:px-6 py-10 md:py-12 lg:py-14">
+        <article className="mx-auto w-full max-w-6xl">
+          <div className="rounded-2xl md:rounded-3xl overflow-hidden shadow-xl border border-gray-100 mb-10 md:mb-12 lg:mb-14">
             <img
               src={post.image}
               alt={post.title}
-              className="w-full h-[360px] sm:h-[460px] lg:h-[640px] object-cover"
+              className="w-full h-[240px] sm:h-[330px] md:h-[430px] lg:h-[540px] object-cover"
               width="1200"
               height="600"
               loading="eager"
               decoding="async"
               fetchPriority="high"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#151249]/20 via-transparent to-transparent"></div>
           </div>
-        </div>
-      </section>
 
-      {/* BLOG CONTENT */}
-      <section className="py-16 md:py-24 bg-white px-6">
-        <div className="container mx-auto max-w-7xl">
-          <article className="mx-auto max-w-5xl">
-            {/* Author Info */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-5 mb-12 md:mb-16 pb-8 border-b border-gray-200">
-              <img
-                src={post.author.avatar}
-                alt={post.author.name}
-                className="w-16 h-16 rounded-full object-cover"
-              />
-              <div className="flex-1">
-                <h3 className="font-semibold text-[#151249] text-xl">{post.author.name}</h3>
-                <p className="text-base text-gray-600">{post.author.title}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <button className="p-3 hover:bg-gray-100 rounded-full transition-colors" aria-label="Share article">
-                  <Share2 className="w-5 h-5 text-gray-600" />
-                </button>
-                <button className="p-3 hover:bg-gray-100 rounded-full transition-colors" aria-label="Bookmark article">
-                  <Bookmark className="w-5 h-5 text-gray-600" />
-                </button>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div
-              className="blog-content"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
-          </article>
-        </div>
-      </section>
-
-      {/* RELATED BLOGS */}
-      {relatedPosts.length > 0 && (
-        <section className="py-20 md:py-24 bg-gray-50 px-6">
-          <div className="container mx-auto max-w-7xl">
-            <div className="text-center mb-14">
-              <h2 className="text-4xl md:text-5xl font-bold text-[#151249] mb-5">
-                Related Articles
-              </h2>
-              <p className="text-gray-600 max-w-3xl mx-auto text-lg">
-                Explore more insights on {post.category.toLowerCase()}
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {relatedPosts.map((relatedPost, index) => (
-                <article
-                  key={index}
-                  className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group border border-gray-100"
-                >
-                  <div className="relative overflow-hidden aspect-video">
-                    <img
-                      src={relatedPost.image}
-                      alt={relatedPost.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      width="800"
-                      height="500"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-[#151249] rounded-full text-xs font-semibold shadow-md">
-                        {relatedPost.category}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-6">
-                    <div className="flex items-center gap-2 text-gray-500 text-xs mb-4">
-                      <Calendar className="w-3.5 h-3.5" />
-                      <span>{relatedPost.date}</span>
-                      <span className="text-gray-300">•</span>
-                      <span>{relatedPost.readTime}</span>
-                    </div>
-
-                    <h3 className="text-xl font-bold text-[#151249] mb-3 leading-tight group-hover:text-yellow-600 transition-colors">
-                      {relatedPost.title}
-                    </h3>
-                    <p className="text-gray-600 leading-relaxed mb-6 text-sm">
-                      {relatedPost.excerpt}
-                    </p>
-
-                    <Link
-                      to={`/blog/${relatedPost.slug}`}
-                      className="inline-flex items-center gap-2 text-[#151249] font-semibold hover:gap-3 transition-all group-hover:text-yellow-600"
-                    >
-                      Read More
-                      <ArrowRight className="w-4 h-4" />
-                    </Link>
-                  </div>
-                </article>
+          <div className="mx-auto w-full max-w-4xl pb-2">
+            <div className="space-y-5 text-gray-700">
+              {(post.detailParagraphs || []).map((paragraph: string, index: number) => (
+                <p key={`${post.slug}-paragraph-${index}`} className="text-base sm:text-lg leading-relaxed">
+                  {paragraph}
+                </p>
               ))}
             </div>
           </div>
-        </section>
-      )}
-
-      {/* CTA SECTION */}
-      <section className="py-16 bg-gradient-to-br from-[#151249] via-[#1e1a5e] to-[#151249] px-6">
-        <div className="container mx-auto max-w-4xl text-center">
-          <div className="mb-8">
-            <Globe className="w-16 h-16 text-yellow-400 mx-auto mb-6" />
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Ready to Break Language Barriers?
-          </h2>
-          <p className="text-white/80 text-lg mb-8 max-w-2xl mx-auto">
-            Get professional translation and interpretation services tailored to your business needs.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to="/contact"
-              className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#151249] rounded-xl hover:shadow-[0_0_30px_rgba(250,204,21,0.6)] transition-all font-bold"
-            >
-              Get Started Today
-            </Link>
-            <Link
-              to="/services"
-              className="inline-flex items-center justify-center px-8 py-4 border-2 border-white/30 text-white rounded-xl hover:bg-white/10 transition-all"
-            >
-              View Services
-            </Link>
-          </div>
-        </div>
+        </article>
       </section>
     </div>
   );
 }
+
+

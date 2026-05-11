@@ -7,6 +7,8 @@ import { ScrollProgressBar } from './components/ScrollProgressBar';
 import { Popup } from './components/Popup';
 import { ArabicContentGuard } from './components/ArabicContentGuard';
 import { SEO } from './components/SEO';
+import { AdminAuthProvider } from './contexts/AdminAuthContext';
+import { AdminProtectedRoute } from './components/admin/AdminProtectedRoute';
 
 const Home = lazy(() => import('./pages/Home').then((module) => ({ default: module.Home })));
 const About = lazy(() => import('./pages/About').then((module) => ({ default: module.About })));
@@ -46,6 +48,10 @@ const MedicalTranslationPage = lazy(() => import('./pages/services/FooterService
 const TechnicalTranslationPage = lazy(() => import('./pages/services/FooterServicePages').then((module) => ({ default: module.TechnicalTranslationPage })));
 const SubtitlesTranscriptionPage = lazy(() => import('./pages/services/FooterServicePages').then((module) => ({ default: module.SubtitlesTranscriptionPage })));
 const WebsiteLocalizationPage = lazy(() => import('./pages/services/FooterServicePages').then((module) => ({ default: module.WebsiteLocalizationPage })));
+const AdminLogin = lazy(() => import('./pages/admin/AdminLogin').then((module) => ({ default: module.AdminLogin })));
+const AdminLayout = lazy(() => import('./pages/admin/AdminLayout').then((module) => ({ default: module.AdminLayout })));
+const AdminDashboardHome = lazy(() => import('./pages/admin/AdminDashboardHome').then((module) => ({ default: module.AdminDashboardHome })));
+const AdminBlogs = lazy(() => import('./pages/admin/AdminBlogs').then((module) => ({ default: module.AdminBlogs })));
 
 function LanguageRouteSync() {
   const { language } = useLanguage();
@@ -59,6 +65,11 @@ function LanguageRouteSync() {
       : pathname.startsWith('/ar/')
         ? pathname.slice(3) || '/'
         : pathname;
+
+    // Keep admin routes language-neutral
+    if (basePath.startsWith('/admin')) {
+      return;
+    }
 
     if (language === 'EN' && isArabicRoute) {
       navigate(`${basePath}${search}${hash}`, { replace: true });
@@ -79,17 +90,18 @@ export default function App() {
 
   return (
     <LanguageProvider>
-      <Router>
-        <div className="min-h-screen bg-white">
-          <ScrollProgressBar />
-          <LanguageRouteSync />
-          <SEO />
-          <Header onOpenPopup={() => setIsPopupOpen(true)} />
-          <ArabicContentGuard />
-          <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
-          <main id="main-content">
-            <Suspense fallback={null}>
-              <Routes>
+      <AdminAuthProvider>
+        <Router>
+          <div className="min-h-screen bg-white">
+            <ScrollProgressBar />
+            <LanguageRouteSync />
+            <SEO />
+            <Header onOpenPopup={() => setIsPopupOpen(true)} />
+            <ArabicContentGuard />
+            <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
+            <main id="main-content">
+              <Suspense fallback={null}>
+                <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/ar" element={<Home />} />
               <Route path="/ar/" element={<Home />} />
@@ -167,12 +179,25 @@ export default function App() {
               <Route path="/ar/privacy" element={<Privacy />} />
               <Route path="/refund-policy" element={<RefundPolicy />} />
               <Route path="/ar/refund-policy" element={<RefundPolicy />} />
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route
+                path="/admin"
+                element={
+                  <AdminProtectedRoute>
+                    <AdminLayout />
+                  </AdminProtectedRoute>
+                }
+              >
+                <Route index element={<AdminDashboardHome />} />
+                <Route path="blogs" element={<AdminBlogs />} />
+              </Route>
               </Routes>
-            </Suspense>
-          </main>
-          <Footer />
-      </div>
-    </Router>
+              </Suspense>
+            </main>
+            <Footer />
+        </div>
+      </Router>
+    </AdminAuthProvider>
     </LanguageProvider>
   );
 }
