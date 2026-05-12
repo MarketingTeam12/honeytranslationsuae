@@ -153,11 +153,11 @@ async function looksLikeAdminBackend(adminBase) {
 
     const contentType = (probe.headers.get('Content-Type') || '').toLowerCase();
 
-    if (contentType.includes('application/json')) {
-      return true;
+    if (probe.status >= 500) {
+      return false;
     }
 
-    if ([400, 401, 403, 405, 422].includes(probe.status)) {
+    if (contentType.includes('application/json') && [200, 201, 400, 401, 403, 409, 422].includes(probe.status)) {
       return true;
     }
 
@@ -189,4 +189,3 @@ export async function resolveBackendAdminBase(request, env) {
   if (configured) return configured;
   return discoverBackendAdminBase(request, env);
 }
-
