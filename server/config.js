@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 
 export const ROOT_DIR = path.resolve(__dirname, '..');
 export const SERVER_DIR = __dirname;
-export const PORT = Number(process.env.CMS_API_PORT || 8787);
+export const PORT = Number(process.env.CMS_API_PORT || process.env.PORT || 8787);
 export const DB_CLIENT = (process.env.CMS_DB_CLIENT || 'sqlite').toLowerCase() === 'mysql' ? 'mysql' : 'sqlite';
 export const DB_PATH = process.env.CMS_DB_PATH || path.join(ROOT_DIR, 'server', 'db', 'cms.sqlite');
 export const MYSQL_HOST = process.env.CMS_MYSQL_HOST || '127.0.0.1';

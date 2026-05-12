@@ -22,6 +22,7 @@
   Required Cloudflare environment variables:
   - `CMS_API_ORIGIN`: public origin of your backend API (example: `https://api.yourdomain.com`)
   - `CMS_CORS_ORIGIN`: comma-separated allowed origins (example: `https://honeytranslationsuae.pages.dev,https://yourdomain.com`)
+  - `CMS_API_FALLBACK_ORIGINS` (optional): comma-separated fallback backend origins for automatic detection.
   
   Supported backend URL keys for Pages Functions (first non-empty is used):
   - `CMS_API_ORIGIN`
@@ -37,5 +38,18 @@
   Notes:
   - Frontend login uses `POST /api/admin/auth/login` with JSON body `{ "email": "...", "password": "..." }`.
   - Functions proxy auth requests to `${CMS_API_ORIGIN}/api/admin/auth/*`.
-  - If `CMS_API_ORIGIN` is missing, auth endpoints return JSON error responses.
+  - If `CMS_API_ORIGIN` is missing, Functions attempt automatic backend discovery using:
+    - `CMS_API_FALLBACK_ORIGINS`
+    - frontend origins from `CMS_CORS_ORIGIN`
+    - request host-derived candidates like `api.<domain>` and `backend.<domain>`
+  - If discovery also fails, auth endpoints return a configuration error response.
+
+  ## Backend Deployment (Render)
+
+  This repo includes `render.yaml` for deploying the CMS backend API.
+
+  After creating the Render service:
+  - copy its public URL (for example `https://honeytranslations-cms-api.onrender.com`)
+  - set Cloudflare Pages `CMS_API_ORIGIN` to that URL
+  - keep `CMS_CORS_ORIGIN` aligned with frontend domains
   

@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: honeytranslations-cms-api
+    runtime: node
+    plan: starter
+    region: singapore
+    buildCommand: npm install
+    startCommand: node server/index.js
+    autoDeploy: true
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CMS_API_PORT
+        value: "10000"
+      - key: CMS_DB_CLIENT
+        value: sqlite
+      - key: CMS_DB_PATH
+        value: /var/data/cms.sqlite
+      - key: CMS_UPLOAD_DIR
+        value: /var/data/uploads
+      - key: CMS_CORS_ORIGIN
+        value: https://honeytranslationsuae.pages.dev,https://honeytranslations.ae
+      - key: CMS_JWT_EXPIRES_IN
+        value: 12h
+      - key: CMS_JWT_SECRET
+        sync: false
+      - key: CMS_ADMIN_USERNAME
+        sync: false
+      - key: CMS_ADMIN_EMAIL
+        sync: false
+      - key: CMS_ADMIN_PASSWORD
+        sync: false
+    disk:
+      name: cms-data
+      mountPath: /var/data
+      sizeGB: 1

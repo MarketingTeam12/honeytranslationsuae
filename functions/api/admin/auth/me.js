@@ -1,16 +1,6 @@
+import { BACKEND_ENV_KEYS, resolveBackendAdminBase } from '../../../_utils/backend.js';
 const ALLOW_METHODS = 'GET, OPTIONS';
 const ALLOW_HEADERS = 'Content-Type, Authorization';
-const BACKEND_ENV_KEYS = [
-  'CMS_API_ORIGIN',
-  'CMS_API_BASE',
-  'CMS_API_URL',
-  'VITE_CMS_API_BASE',
-  'VITE_CMS_API_ORIGIN',
-  'VITE_API_BASE_URL',
-  'VITE_API_URL',
-  'API_BASE_URL',
-  'API_URL',
-];
 
 function parseAllowedOrigins(raw) {
   if (!raw) return [];
@@ -59,45 +49,7 @@ function json(request, env, status, body) {
   });
 }
 
-function getConfiguredBackendBase(env) {
-  for (const key of BACKEND_ENV_KEYS) {
-    const value = env?.[key];
-    if (value === undefined || value === null) continue;
-    const normalized = String(value).trim();
-    if (normalized) return normalized;
-  }
-  return '';
-}
-
-function getBackendAdminBase(env) {
-  const configured = getConfiguredBackendBase(env);
-  if (!configured) return null;
-  if (!/^https?:\/\//i.test(configured)) return null;
-
-  try {
-    const parsed = new URL(configured);
-    const pathname = parsed.pathname.replace(/\/+$/, '');
-
-    if (pathname === '/api/admin') {
-      return `${parsed.origin}${pathname}`;
-    }
-
-    if (pathname === '/api') {
-      return `${parsed.origin}${pathname}/admin`;
-    }
-
-    if (!pathname || pathname === '/') {
-      return `${parsed.origin}/api/admin`;
-    }
-
-    return `${parsed.origin}${pathname}/api/admin`;
-  } catch {
-    return null;
-  }
-}
-
-function getBackendUrl(env) {
-  const adminBase = getBackendAdminBase(env);
+function getBackendUrl(adminBase) {
   if (!adminBase) return null;
   return `${adminBase}/auth/me`;
 }
@@ -111,7 +63,8 @@ export function onRequestOptions(context) {
 
 export async function onRequestGet(context) {
   const { request, env } = context;
-  const backendUrl = getBackendUrl(env);
+  const backendAdminBase = await resolveBackendAdminBase(request, env);
+  const backendUrl = getBackendUrl(backendAdminBase);
   if (!backendUrl) {
     return json(request, env, 500, {
       message: `CMS backend API origin is not configured. Set one of: ${BACKEND_ENV_KEYS.join(', ')}`,

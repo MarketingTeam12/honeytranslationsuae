@@ -65,6 +65,27 @@ If you prefer separate terminals, use:
 - `npm run dev:frontend`
 - `npm run api:dev`
 
+## 6) Production (Cloudflare Pages + Render)
+
+Deploy backend API first (Render):
+
+- Use `render.yaml` from repo root.
+- Ensure backend env vars include:
+  - `CMS_JWT_SECRET`
+  - `CMS_ADMIN_EMAIL`
+  - `CMS_ADMIN_PASSWORD`
+  - `CMS_CORS_ORIGIN=https://honeytranslationsuae.pages.dev,https://honeytranslations.ae`
+
+Then configure Cloudflare Pages (Production env vars):
+
+- `CMS_API_ORIGIN=<your-render-backend-url>`
+- `CMS_CORS_ORIGIN=https://honeytranslationsuae.pages.dev,https://honeytranslations.ae`
+- `CMS_API_FALLBACK_ORIGINS=<optional-comma-separated-backend-origins>`
+
+Optional frontend var (if not using same-origin `/api`):
+
+- `VITE_CMS_API_BASE=<public-api-base>`
+
 ## Admin Login
 
 Use credentials from `.env`:

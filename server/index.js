@@ -48,6 +48,6 @@ app.use((error, _req, res, _next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`CMS API running on http://localhost:${PORT}`);
+  console.log(`CMS API running on port ${PORT}`);
   console.log(`Uploads directory: ${UPLOAD_DIR}`);
 });
