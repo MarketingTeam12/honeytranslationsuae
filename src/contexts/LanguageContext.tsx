@@ -1,5 +1,5 @@
 ﻿import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-
+// test update
 type Language = 'EN' | 'AR';
 const LANGUAGE_STORAGE_KEY = 'language';
 
