@@ -1,5 +1,16 @@
 const ALLOW_METHODS = 'GET, POST, PUT, PATCH, DELETE, OPTIONS';
 const ALLOW_HEADERS = 'Content-Type, Authorization';
+const BACKEND_ENV_KEYS = [
+  'CMS_API_ORIGIN',
+  'CMS_API_BASE',
+  'CMS_API_URL',
+  'VITE_CMS_API_BASE',
+  'VITE_CMS_API_ORIGIN',
+  'VITE_API_BASE_URL',
+  'VITE_API_URL',
+  'API_BASE_URL',
+  'API_URL',
+];
 
 function parseAllowedOrigins(raw) {
   if (!raw) return [];
@@ -55,11 +66,47 @@ function getPathSuffix(context) {
   return String(parts);
 }
 
+function getConfiguredBackendBase(env) {
+  for (const key of BACKEND_ENV_KEYS) {
+    const value = env?.[key];
+    if (value === undefined || value === null) continue;
+    const normalized = String(value).trim();
+    if (normalized) return normalized;
+  }
+  return '';
+}
+
+function getBackendAdminBase(env) {
+  const configured = getConfiguredBackendBase(env);
+  if (!configured) return null;
+  if (!/^https?:\/\//i.test(configured)) return null;
+
+  try {
+    const parsed = new URL(configured);
+    const pathname = parsed.pathname.replace(/\/+$/, '');
+
+    if (pathname === '/api/admin') {
+      return `${parsed.origin}${pathname}`;
+    }
+
+    if (pathname === '/api') {
+      return `${parsed.origin}${pathname}/admin`;
+    }
+
+    if (!pathname || pathname === '/') {
+      return `${parsed.origin}/api/admin`;
+    }
+
+    return `${parsed.origin}${pathname}/api/admin`;
+  } catch {
+    return null;
+  }
+}
+
 function getBackendUrl(context) {
-  const origin = (context.env?.CMS_API_ORIGIN || '').trim();
-  if (!origin) return null;
+  const base = getBackendAdminBase(context.env);
+  if (!base) return null;
   const suffix = getPathSuffix(context);
-  const base = `${origin.replace(/\/$/, '')}/api/admin`;
   return suffix ? `${base}/${suffix}` : base;
 }
 
@@ -78,7 +125,9 @@ export async function onRequest(context) {
 
   const backendUrl = getBackendUrl(context);
   if (!backendUrl) {
-    return json(request, env, 500, { message: 'CMS_API_ORIGIN is not configured' });
+    return json(request, env, 500, {
+      message: `CMS backend API origin is not configured. Set one of: ${BACKEND_ENV_KEYS.join(', ')}`,
+    });
   }
 
   const headers = new Headers(request.headers);

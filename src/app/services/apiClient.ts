@@ -1,11 +1,16 @@
-const API_BASE = (import.meta as any).env?.VITE_CMS_API_BASE || '';
+const API_BASE =
+  (import.meta as any).env?.VITE_CMS_API_BASE ||
+  (import.meta as any).env?.VITE_CMS_API_ORIGIN ||
+  (import.meta as any).env?.VITE_API_BASE_URL ||
+  (import.meta as any).env?.VITE_API_URL ||
+  '';
 
 type RequestOptions = RequestInit & {
   token?: string | null;
 };
 
 const CMS_API_HELP =
-  'Cannot reach the CMS API. Start it with `npm run api:dev` and initialize DB once with `npm run db:init`.';
+  'Cannot reach the CMS API. For local setup run `npm run api:dev` and `npm run db:init`. For Cloudflare, set CMS_API_ORIGIN (or VITE_CMS_API_BASE) to your backend URL.';
 
 async function request(path: string, options: RequestOptions = {}) {
   const headers = new Headers(options.headers || {});
@@ -39,6 +44,13 @@ async function request(path: string, options: RequestOptions = {}) {
       const errorBody = await response.json();
       if (errorBody?.message) {
         message = errorBody.message;
+      }
+      if (
+        typeof message === 'string' &&
+        message.includes('CMS backend API origin is not configured')
+      ) {
+        message =
+          'Admin API is not connected. Set CMS_API_ORIGIN (or VITE_CMS_API_BASE) in Cloudflare Pages environment variables.';
       }
     } catch {
       if (response.status === 405 && path === '/api/admin/auth/login') {

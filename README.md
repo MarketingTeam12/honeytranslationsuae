@@ -22,6 +22,17 @@
   Required Cloudflare environment variables:
   - `CMS_API_ORIGIN`: public origin of your backend API (example: `https://api.yourdomain.com`)
   - `CMS_CORS_ORIGIN`: comma-separated allowed origins (example: `https://honeytranslationsuae.pages.dev,https://yourdomain.com`)
+  
+  Supported backend URL keys for Pages Functions (first non-empty is used):
+  - `CMS_API_ORIGIN`
+  - `CMS_API_BASE`
+  - `CMS_API_URL`
+  - `VITE_CMS_API_BASE`
+  - `VITE_CMS_API_ORIGIN`
+  - `VITE_API_BASE_URL`
+  - `VITE_API_URL`
+  - `API_BASE_URL`
+  - `API_URL`
 
   Notes:
   - Frontend login uses `POST /api/admin/auth/login` with JSON body `{ "email": "...", "password": "..." }`.
