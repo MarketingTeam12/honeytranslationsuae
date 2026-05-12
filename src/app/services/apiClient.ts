@@ -9,6 +9,9 @@ const CMS_API_HELP =
 
 async function request(path: string, options: RequestOptions = {}) {
   const headers = new Headers(options.headers || {});
+  if (!headers.has('Accept')) {
+    headers.set('Accept', 'application/json');
+  }
   if (!headers.has('Content-Type') && !(options.body instanceof FormData)) {
     headers.set('Content-Type', 'application/json');
   }
@@ -38,6 +41,9 @@ async function request(path: string, options: RequestOptions = {}) {
         message = errorBody.message;
       }
     } catch {
+      if (response.status === 405 && path === '/api/admin/auth/login') {
+        message = 'Login endpoint rejected this method. Ensure POST /api/admin/auth/login is deployed.';
+      }
       if (response.status >= 500 && path.startsWith('/api/admin')) {
         message = CMS_API_HELP;
       }
