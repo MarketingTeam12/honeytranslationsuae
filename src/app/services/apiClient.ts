@@ -1,9 +1,11 @@
-const API_BASE =
+const RAW_API_BASE =
   (import.meta as any).env?.VITE_CMS_API_BASE ||
   (import.meta as any).env?.VITE_CMS_API_ORIGIN ||
   (import.meta as any).env?.VITE_API_BASE_URL ||
   (import.meta as any).env?.VITE_API_URL ||
   '';
+const API_BASE = RAW_API_BASE.replace(/\/+$/, '');
+const USING_SAME_ORIGIN_API = API_BASE.length === 0;
 
 type RequestOptions = RequestInit & {
   token?: string | null;
@@ -11,6 +13,20 @@ type RequestOptions = RequestInit & {
 
 const CMS_API_HELP =
   'Cannot reach the CMS API. For local setup run `npm run api:dev` and `npm run db:init`. For Cloudflare, set CMS_API_ORIGIN (or VITE_CMS_API_BASE) to your backend URL.';
+
+if (typeof window !== 'undefined' && pathMatchesAdmin(window.location?.pathname || '/')) {
+  const mode = USING_SAME_ORIGIN_API ? 'same-origin (/api)' : API_BASE;
+  console.info(`[admin-api] Using API base: ${mode}`);
+}
+
+function pathMatchesAdmin(pathname: string) {
+  return pathname.startsWith('/admin');
+}
+
+function buildRequestUrl(path: string) {
+  if (/^https?:\/\//i.test(path)) return path;
+  return `${API_BASE}${path}`;
+}
 
 async function request(path: string, options: RequestOptions = {}) {
   const headers = new Headers(options.headers || {});
@@ -26,13 +42,19 @@ async function request(path: string, options: RequestOptions = {}) {
   }
 
   let response: Response;
+  const url = buildRequestUrl(path);
   try {
-    response = await fetch(`${API_BASE}${path}`, {
+    response = await fetch(url, {
       ...options,
       headers,
     });
   } catch (error) {
     if (path.startsWith('/api/admin')) {
+      console.error('[admin-api] Network error while contacting CMS API', {
+        url,
+        apiBase: USING_SAME_ORIGIN_API ? '(same-origin /api)' : API_BASE,
+        error: error instanceof Error ? error.message : String(error),
+      });
       throw new Error(CMS_API_HELP);
     }
     throw error;
@@ -52,12 +74,28 @@ async function request(path: string, options: RequestOptions = {}) {
         message =
           'Admin API is not connected. Set CMS_API_ORIGIN (or VITE_CMS_API_BASE) in Cloudflare Pages environment variables.';
       }
+      if (path.startsWith('/api/admin')) {
+        console.error('[admin-api] CMS API error response', {
+          url,
+          status: response.status,
+          message,
+          apiBase: USING_SAME_ORIGIN_API ? '(same-origin /api)' : API_BASE,
+        });
+      }
     } catch {
       if (response.status === 405 && path === '/api/admin/auth/login') {
         message = 'Login endpoint rejected this method. Ensure POST /api/admin/auth/login is deployed.';
       }
       if (response.status >= 500 && path.startsWith('/api/admin')) {
         message = CMS_API_HELP;
+      }
+      if (path.startsWith('/api/admin')) {
+        console.error('[admin-api] CMS API non-JSON error response', {
+          url,
+          status: response.status,
+          message,
+          apiBase: USING_SAME_ORIGIN_API ? '(same-origin /api)' : API_BASE,
+        });
       }
     }
     throw new Error(message);

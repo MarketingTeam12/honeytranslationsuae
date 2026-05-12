@@ -4,13 +4,8 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "node scripts/dev-with-api.mjs",
-    "dev:frontend": "vite",
-    "build": "vite build",
-    "api:dev": "node server/index.js",
-    "db:migrate": "node server/db/migrate.js",
-    "db:seed": "node server/db/seed.js",
-    "db:init": "node server/db/migrate.js && node server/db/seed.js"
+    "dev": "vite",
+    "build": "vite build"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -44,6 +39,7 @@
     "@radix-ui/react-toggle": "1.1.2",
     "@radix-ui/react-toggle-group": "1.1.2",
     "@radix-ui/react-tooltip": "1.1.8",
+    "@supabase/supabase-js": "^2.57.4",
     "bcryptjs": "^2.4.3",
     "better-sqlite3": "^12.9.0",
     "class-variance-authority": "0.7.1",

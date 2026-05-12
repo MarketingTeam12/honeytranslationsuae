@@ -1,55 +1,45 @@
+# honeytranslations.be (Copy)
 
-  # honeytranslations.be (Copy)
+This project now uses Supabase for:
+- Admin authentication
+- Blog/category storage
+- Featured image storage
 
-  This is a code bundle for honeytranslations.be (Copy). The original project is available at https://www.figma.com/design/rF8oUZI8J3AS1cSWHJUoWL/honeytranslations.be--Copy-.
+## Local setup
 
-  ## Running the code
+1. Install dependencies:
 
-  Run `npm i` to install the dependencies.
+```bash
+npm install
+```
 
-  Run `npm run dev` to start the development server.
+2. Copy env template and fill your Supabase credentials:
 
-  ## Admin API in Production (Cloudflare Pages)
+```bash
+cp .env.example .env
+```
 
-  This project uses frontend calls like `/api/admin/auth/login`.
-  On Cloudflare Pages, those routes must be backed by Pages Functions.
+Required variables:
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+- `VITE_SUPABASE_BLOG_IMAGE_BUCKET` (optional, default: `blog-images`)
 
-  Added Functions:
-  - `functions/api/admin/auth/login.js` (`POST`, `OPTIONS`)
-  - `functions/api/admin/auth/me.js` (`GET`, `OPTIONS`)
-  - `functions/api/admin/auth/logout.js` (`POST`, `OPTIONS`)
+3. In Supabase SQL Editor, run:
 
-  Required Cloudflare environment variables:
-  - `CMS_API_ORIGIN`: public origin of your backend API (example: `https://api.yourdomain.com`)
-  - `CMS_CORS_ORIGIN`: comma-separated allowed origins (example: `https://honeytranslationsuae.pages.dev,https://yourdomain.com`)
-  - `CMS_API_FALLBACK_ORIGINS` (optional): comma-separated fallback backend origins for automatic detection.
-  
-  Supported backend URL keys for Pages Functions (first non-empty is used):
-  - `CMS_API_ORIGIN`
-  - `CMS_API_BASE`
-  - `CMS_API_URL`
-  - `VITE_CMS_API_BASE`
-  - `VITE_CMS_API_ORIGIN`
-  - `VITE_API_BASE_URL`
-  - `VITE_API_URL`
-  - `API_BASE_URL`
-  - `API_URL`
+`supabase/schema.sql`
 
-  Notes:
-  - Frontend login uses `POST /api/admin/auth/login` with JSON body `{ "email": "...", "password": "..." }`.
-  - Functions proxy auth requests to `${CMS_API_ORIGIN}/api/admin/auth/*`.
-  - If `CMS_API_ORIGIN` is missing, Functions attempt automatic backend discovery using:
-    - `CMS_API_FALLBACK_ORIGINS`
-    - frontend origins from `CMS_CORS_ORIGIN`
-    - request host-derived candidates like `api.<domain>` and `backend.<domain>`
-  - If discovery also fails, auth endpoints return a configuration error response.
+4. Create your first admin user:
+- Go to Supabase Auth, create a user with email/password.
+- Insert that user into `public.admin_users` using the SQL shown at the bottom of `supabase/schema.sql`.
 
-  ## Backend Deployment (Render)
+5. Start app:
 
-  This repo includes `render.yaml` for deploying the CMS backend API.
+```bash
+npm run dev
+```
 
-  After creating the Render service:
-  - copy its public URL (for example `https://honeytranslations-cms-api.onrender.com`)
-  - set Cloudflare Pages `CMS_API_ORIGIN` to that URL
-  - keep `CMS_CORS_ORIGIN` aligned with frontend domains
-  
+## Admin routes
+
+- Login: `/admin/login`
+- Dashboard: `/admin`
+- Blog management: `/admin/blogs`

@@ -41,7 +41,7 @@ export type DashboardStats = {
 };
 
 export type AdminUser = {
-  id: number;
+  id: string;
   username: string;
   email: string;
   createdAt: string;
